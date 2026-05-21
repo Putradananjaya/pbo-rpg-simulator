@@ -47,7 +47,7 @@ public class ArenaPertarungan {
 
                 System.out.println("\n>>> HASIL SERANGAN ANDA <<<");
                 // Menyerang monster spesifik sesuai pilihan (Indeks Array dimulai dari 0, jadi
-                // pilihanTarget - 1)
+                //  pilihanTarget - 1)
                 int indeksMonster = pilihanTarget - 1;
                 gelombangMonster[indeksMonster].terimaDamage(power);
             }

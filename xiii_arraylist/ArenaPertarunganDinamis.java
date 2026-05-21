@@ -6,13 +6,6 @@ import java.util.ArrayList;
 public class ArenaPertarunganDinamis {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-
-        // Array monster tetap sama seperti hasil pertemuan 10
-        // Musuh[] gelombangMonster = new Musuh[4];
-        // gelombangMonster[0] = new Slime();
-        // gelombangMonster[1] = new Naga();
-        // gelombangMonster[2] = new Slime();
-        // gelombangMonster[3] = new Zombie();
         ArrayList<Musuh> gelombangMonster = new ArrayList<>();
 
         // Menambahkan objek ke dalam daftar secara dinamis
@@ -32,9 +25,9 @@ public class ArenaPertarunganDinamis {
         while (isBermain && !gelombangMonster.isEmpty()) {
 
             System.out.println("\n--- STATUS MONSTER ---");
-            // Menggunakan .size() sebagai pengganti .length
+            
             for (int i = 0; i < gelombangMonster.size(); i++) {
-                // Menggunakan .get(i) sebagai pengganti [i]
+                
                 Musuh m = gelombangMonster.get(i);
                 System.out.println((i + 1) + ". " + m.namaMusuh + " (HP: " + m.healthPoint + ")");
             }
@@ -62,11 +55,14 @@ public class ArenaPertarunganDinamis {
 
                 System.out.print("Masukkan kekuatan serangan Anda (10-100): ");
                 int power = input.nextInt();
-
+                if (power < 10 || power > 100) {
+                    // Lemparkan Custom Exception Anda secara sengaja di sini beserta pesannya!
+                    throw new SeranganTidakValidException("Kekuatan serangan harus di antara 10 sampai 100!");
+                }
                 System.out.println("\n>>> HASIL SERANGAN ANDA <<<");
                 target.terimaDamage(power);
 
-                // --- LOGIKA PENGHAPUSAN DINAMIS ---
+                // --- LOGIKA PENGHAPUSAN DINAMIS 1---
                 if (target.healthPoint <= 0) {
                     System.out.println(target.namaMusuh + " hancur menjadi debu!");
 
@@ -80,14 +76,16 @@ public class ArenaPertarunganDinamis {
                 }
 
             } catch (Exception e) {
-                System.out.println("Terjadi kesalahan input, silakan coba lagi.");
+                System.out.println
+                ("Terjadi kesalahan input, silakan coba lagi.");
                 input.nextLine();
                 continue;
             }
 
             // Jika semua monster mati setelah serangan pemain, langsung keluar dari loop
             if (gelombangMonster.isEmpty()) {
-                System.out.println("\nSELAMAT! Semua monster telah dibersihkan dari arena!");
+                System.out.println
+                ("\nSELAMAT! Semua monster telah dibersihkan dari arena!");
                 break;
             }
 
@@ -124,7 +122,8 @@ public class ArenaPertarunganDinamis {
             }
 
             if (semuaMati) {
-                System.out.println("\nSELAMAT! Anda telah menyapu bersih gelombang monster ini!");
+                System.out.println
+                ("\nSELAMAT! Anda telah menyapu bersih gelombang monster ini!");
                 isBermain = false;
             }
         }

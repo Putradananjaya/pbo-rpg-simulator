@@ -55,7 +55,8 @@ public class ArenaPertarungan {
                 if (gelombangMonster[indeksMonster].healthPoint <= 0) {
                     // Melempar error buatan sendiri secara sengaja
                     throw new TargetMatiException(
-                            "Tindakan Ilegal: Anda tidak bisa menyerang monster yang sudah mati!");
+                        "Tindakan Ilegal: Anda tidak bisa menyerang monster yang sudah mati!"
+                    );
                 }
 
                 System.out.print("Masukkan kekuatan serangan Anda (10-100): ");

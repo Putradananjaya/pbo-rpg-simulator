@@ -1,10 +1,11 @@
 package xiv_object_serialization;
 
-import java.util.Scanner;
+import java.io.*;
 import java.util.ArrayList;
-import java.io.*; // Wajib diimpor untuk fitur Serialization (Save/Load)
+import java.util.Scanner; // Wajib diimpor untuk fitur Serialization (Save/Load)
 
 public class ArenaPertarunganDinamis {
+
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         ArrayList<Musuh> gelombangMonster = new ArrayList<>();
@@ -44,8 +45,7 @@ public class ArenaPertarunganDinamis {
                     System.out.println("Anda lari terbirit-birit dari arena...");
                     isBermain = false;
                     continue;
-                }
-                // --- FITUR SAVE GAME (SERIALIZATION) ---
+                } // --- FITUR SAVE GAME (SERIALIZATION) ---
                 else if (pilihanTarget == 8) {
                     try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("savegame_rpg.dat"))) {
                         oos.writeObject(gelombangMonster);
@@ -54,8 +54,7 @@ public class ArenaPertarunganDinamis {
                         System.out.println(">>> GAGAL: Terjadi kesalahan saat menyimpan game. " + e.getMessage());
                     }
                     continue; // Mengulang menu tanpa memicu serangan monster
-                }
-                // --- FITUR LOAD GAME (DESERIALIZATION) ---
+                } // --- FITUR LOAD GAME (DESERIALIZATION) ---
                 else if (pilihanTarget == 9) {
                     try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("savegame_rpg.dat"))) {
                         // Mengganti isi ArrayList saat ini dengan data dari file
@@ -69,7 +68,7 @@ public class ArenaPertarunganDinamis {
                     continue; // Mengulang menu tanpa memicu serangan monster
                 }
 
-                // Validasi rentang pilihan target monster
+                // Validasi rentang pilihan dinamis sesuai jumlah monster yang tersisa
                 if (pilihanTarget < 1 || pilihanTarget > gelombangMonster.size()) {
                     System.out.println("Pilihan tidak valid!");
                     continue;
@@ -80,11 +79,14 @@ public class ArenaPertarunganDinamis {
 
                 System.out.print("Masukkan kekuatan serangan Anda (10-100): ");
                 int power = input.nextInt();
-
+                if (power < 10 || power > 100) {
+                    // Lemparkan Custom Exception Anda secara sengaja di sini beserta pesannya!
+                    throw new SeranganTidakValidException("Kekuatan serangan harus di antara 10 sampai 100!");
+                }
                 System.out.println("\n>>> HASIL SERANGAN ANDA <<<");
                 target.terimaDamage(power);
 
-                // --- LOGIKA PENGHAPUSAN DINAMIS ---
+                // --- LOGIKA PENGHAPUSAN DINAMIS 1---
                 if (target.healthPoint <= 0) {
                     System.out.println(target.namaMusuh + " hancur menjadi debu!");
 
@@ -114,18 +116,36 @@ public class ArenaPertarunganDinamis {
             for (int i = 0; i < gelombangMonster.size(); i++) {
                 Musuh monsterAktif = gelombangMonster.get(i);
 
+                // Tidak perlu lagi if (hp > 0), karena jika mati sudah di-remove!
                 monsterAktif.suaraKhas();
 
                 if (monsterAktif instanceof BisaTerbang) {
                     System.out.println("[PERINGATAN! SERANGAN UDARA TERDETEKSI]");
                     BisaTerbang monsterTerbang = (BisaTerbang) monsterAktif;
 
+                    // Panggil langsung tanpa try-catch ManaHabisException
                     monsterTerbang.lepasLandas();
                     monsterTerbang.seranganUdara();
                 } else {
                     monsterAktif.serangPemain();
                 }
                 System.out.println("-------------------------------------");
+            }
+
+            // Logika untuk memeriksa apakah semua monster sudah mati (opsional, untuk
+            // mempermanis game)
+            // Logika untuk memeriksa apakah semua monster sudah mati
+            boolean semuaMati = true;
+            for (int i = 0; i < gelombangMonster.size(); i++) { // Gunakan .size() bukan .length
+                if (gelombangMonster.get(i).healthPoint > 0) { // Gunakan .get(i) bukan [i]
+                    semuaMati = false;
+                    break;
+                }
+            }
+
+            if (semuaMati) {
+                System.out.println("\nSELAMAT! Anda telah menyapu bersih gelombang monster ini!");
+                isBermain = false;
             }
         }
 

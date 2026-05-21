@@ -34,6 +34,7 @@ public class ArenaPertarungan {
 
             System.out.println("5. Kabur dari pertarungan");
             System.out.print("\nPilih target monster yang ingin diserang (1-4) atau 5 untuk kabur: ");
+            
             int pilihanTarget = input.nextInt();
 
             if (pilihanTarget == 5) {
